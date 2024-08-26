@@ -38,17 +38,52 @@ namespace OrderApi.Data.Repository.v1
 
         public IEnumerable<TEntity> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return OrderContext.Set<TEntity>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Couldn't retrieve entities {ex.Message}");
+            }
         }
 
-        public Task<TEntity> UpdateAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
+            }
+
+            try
+            {
+                OrderContext.Update(entity);
+                await OrderContext.SaveChangesAsync();
+
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{nameof(entity)} could not be updated {ex.Message}");
+            }
         }
 
-        public Task UpdateRangeAsync(List<TEntity> entities)
+        public async Task UpdateRangeAsync(List<TEntity> entities)
         {
-            throw new NotImplementedException();
+            if (entities == null)
+            {
+                throw new ArgumentNullException($"{nameof(UpdateRangeAsync)} entities must not be null");
+            }
+
+            try
+            {
+                OrderContext.UpdateRange(entities);
+                await OrderContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{nameof(entities)} could not be updated {ex.Message}");
+            }
         }
     }
 }

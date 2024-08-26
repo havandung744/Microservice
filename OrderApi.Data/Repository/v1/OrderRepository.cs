@@ -13,7 +13,5 @@ namespace OrderApi.Data.Repository.v1
         public OrderRepository(OrderContext orderContext) : base(orderContext)
         {
         }
-
-
     }
 }

@@ -18,10 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
-//builder.Services.AddTransient<IRequestHandler<CreateOrderCommand, Order>, CreateOrderCommandHandler>();
-
-//builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(ICustomerNameUpdateService).Assembly);
+builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 
 bool.TryParse(builder.Configuration["BaseServiceSettings:UseInMemoryDatabase"], out var useInMemory);
 bool.TryParse(builder.Configuration["UseAadAuthentication"], out var useAadAuthentication);
