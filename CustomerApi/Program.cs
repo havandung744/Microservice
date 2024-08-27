@@ -1,5 +1,10 @@
 using CustomerApi.Data.Database;
+using CustomerApi.Messaging.Send.Option.v1;
+using CustomerApi.Messaging.Send.Send.v1;
+using CustomerApi.Messaging.Send.Sender.v1;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +17,10 @@ builder.Services.AddDbContext<CustomerContext>(options =>
     //options.UseSqlServer(builder.Configuration.GetConnectionString("OrderDatabase"));
     options.UseSqlServer(connection, b => b.MigrationsAssembly("CustomerApi.Data"));
 });
+
+builder.Services.Configure<RabbitMqConfiguration>(builder.Configuration.GetSection("RabbitMq"));
+builder.Services.AddTransient<ICustomerUpdateSender, CustomerUpdateSender>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
