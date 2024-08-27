@@ -12,7 +12,8 @@ namespace OrderApi.Service.v1.Command
 {
     public class DeleteOrderCommand : IRequest<int>
     {
-        public Order Order { get; set; }
+        public string Id { get; set; }
+        //public Order Order { get; set; }
     }
 
     public class DeleteOrderCommandHanler : IRequestHandler<DeleteOrderCommand, int>
@@ -26,7 +27,8 @@ namespace OrderApi.Service.v1.Command
         }
         public async Task<int> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
-            return await _orderRepository.DeleteAsync(request.Order);
+
+            return await _orderRepository.DeleteAsync(request.Id);
         }
     }
 }

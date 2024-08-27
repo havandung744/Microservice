@@ -73,11 +73,12 @@ namespace OrderApi.Controllers.v1
 
         [HttpDelete]
         [Route("DeleteOrder")]
-        public async Task<ActionResult<int>> DeleteOrder(OrderModel orderModel)
+        public async Task<ActionResult<int>> DeleteOrder(DeleteOrderCommand deleteOrderCommand)
         {
             try
             {
-                return await _mediator.Send(new DeleteOrderCommand(orderModel));
+                //return await _mediator.Send(deleteOrderCommand);
+                return await _mediator.Send(deleteOrderCommand);
             }
             catch (Exception ex)
             {

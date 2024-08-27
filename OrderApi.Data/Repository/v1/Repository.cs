@@ -87,22 +87,27 @@ namespace OrderApi.Data.Repository.v1
             }
         }
 
-        public async Task<int> DeleteAsync(TEntity entity)
+        public async Task<int> DeleteAsync(string id)
         {
-            if (entity == null)
+            if (id == null)
             {
-                throw new ArgumentNullException($"{nameof(DeleteAsync)} entity must not be null");
+                throw new ArgumentNullException($"{nameof(DeleteAsync)} id must not be null");
             }
             try
             {
-                OrderContext.Remove(entity);
-                await OrderContext.SaveChangesAsync();
+                var guilId = Guid.Parse(id);
+                var order = await OrderContext.Order.FindAsync(guilId);
+                if (order != null)
+                {
+                    OrderContext.Remove(order);
+                    await OrderContext.SaveChangesAsync();
+                }
 
                 return 1;
             }
             catch (Exception ex)
             {
-                throw new Exception($"{nameof(entity)} could not be updated {ex.Message}");
+                throw new Exception($"{nameof(id)} could not be updated {ex.Message}");
             }
         }
     }
