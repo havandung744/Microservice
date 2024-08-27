@@ -15,5 +15,7 @@ namespace OrderApi.Data.Repository.v1
         Task<TEntity> UpdateAsync(TEntity entity);
 
         Task UpdateRangeAsync(List<TEntity> entities);
+
+        Task<int> DeleteAsync(TEntity entity);
     }
 }

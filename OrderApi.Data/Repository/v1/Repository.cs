@@ -1,4 +1,5 @@
-﻿using OrderApi.Data.Database;
+﻿using Microsoft.AspNetCore.Mvc;
+using OrderApi.Data.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,6 +84,25 @@ namespace OrderApi.Data.Repository.v1
             catch (Exception ex)
             {
                 throw new Exception($"{nameof(entities)} could not be updated {ex.Message}");
+            }
+        }
+
+        public async Task<int> DeleteAsync(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException($"{nameof(DeleteAsync)} entity must not be null");
+            }
+            try
+            {
+                OrderContext.Remove(entity);
+                await OrderContext.SaveChangesAsync();
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{nameof(entity)} could not be updated {ex.Message}");
             }
         }
     }

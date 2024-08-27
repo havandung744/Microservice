@@ -39,5 +39,50 @@ namespace OrderApi.Controllers.v1
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut]
+        [Route("UpdateOrder")]
+        public async Task<ActionResult<Order>> UpdateOrder(OrderModel orderModel)
+        {
+            try
+            {
+                return await _mediator.Send(new UpdateOrderCommand
+                {
+                    Order = _mapper.Map<Order>(orderModel)
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetOrders")]
+        public async Task<ActionResult<List<Order>>> GetOrders()
+        {
+            try
+            {
+                return await _mediator.Send(new GetOrdersCommand());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeleteOrder")]
+        public async Task<ActionResult<int>> DeleteOrder(OrderModel orderModel)
+        {
+            try
+            {
+                return await _mediator.Send(new DeleteOrderCommand(orderModel));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
