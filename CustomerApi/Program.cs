@@ -1,15 +1,20 @@
 using CustomerApi.Data.Database;
+using CustomerApi.Infrastructure.Automapper;
 using CustomerApi.Messaging.Send.Option.v1;
 using CustomerApi.Messaging.Send.Send.v1;
 using CustomerApi.Messaging.Send.Sender.v1;
+using CustomerApi.Service.v1.Command;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(UpdateCustomerCommand).Assembly);
 
 var connection = builder.Configuration.GetConnectionString("CustomerDatabase");
 builder.Services.AddDbContext<CustomerContext>(options =>
@@ -19,7 +24,10 @@ builder.Services.AddDbContext<CustomerContext>(options =>
 });
 
 builder.Services.Configure<RabbitMqConfiguration>(builder.Configuration.GetSection("RabbitMq"));
+
+// add rabbitmq
 builder.Services.AddTransient<ICustomerUpdateSender, CustomerUpdateSender>();
+//builder.Services.AddHostedService<CustomerUpdateSender>();
 
 var app = builder.Build();
 
