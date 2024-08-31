@@ -15,10 +15,10 @@ namespace OrderApi.Messaging.Receive.Receiver.v1
         private IModel _channel;
         private IConnection _connection;
         private readonly ICustomerNameUpdateService _customerNameUpdateService;
-        private readonly string _hostname;
-        private readonly string _queueName;
-        private readonly string _username;
-        private readonly string _password;
+        private readonly string? _hostname;
+        private readonly string? _queueName;
+        private readonly string? _username;
+        private readonly string? _password;
 
         public CustomerFullNameUpdateReceiver(ICustomerNameUpdateService customerNameUpdateService, IOptions<RabbitMqConfiguration> rabbitMqOptions)
         {
@@ -32,19 +32,19 @@ namespace OrderApi.Messaging.Receive.Receiver.v1
 
         private void InitializeRabbitMqListener()
         {
-            //var factory = new ConnectionFactory
-            //{
-            //    HostName = _hostname,
-            //    UserName = _username,
-            //    Password = _password
-            //};
-
             var factory = new ConnectionFactory
             {
-                HostName = "localhost",
-                UserName = "guest",
-                Password = "guest"
+                HostName = _hostname,
+                UserName = _username,
+                Password = _password
             };
+
+            //var factory = new ConnectionFactory
+            //{
+            //    HostName = "localhost",
+            //    UserName = "guest",
+            //    Password = "guest"
+            //};
             _connection = factory.CreateConnection();
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
             _channel = _connection.CreateModel();

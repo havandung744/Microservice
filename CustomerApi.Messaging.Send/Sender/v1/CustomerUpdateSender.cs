@@ -4,20 +4,16 @@ using CustomerApi.Messaging.Send.Sender.v1;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomerApi.Messaging.Send.Send.v1
 {
     public class CustomerUpdateSender : ICustomerUpdateSender
     {
-        private readonly string _hostname;
-        private readonly string _password;
-        private readonly string _queueName;
-        private readonly string _username;
+        private readonly string? _hostname;
+        private readonly string? _password;
+        private readonly string? _queueName;
+        private readonly string? _username;
         private IConnection _connection;
 
         public CustomerUpdateSender(IOptions<RabbitMqConfiguration> rabbitMqOptions)
