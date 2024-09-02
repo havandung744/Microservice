@@ -1,4 +1,5 @@
-﻿using OrderApi.Data.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using OrderApi.Data.Database;
 using OrderApi.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,11 @@ namespace OrderApi.Data.Repository.v1
     {
         public OrderRepository(OrderContext orderContext) : base(orderContext)
         {
+        }
+
+        public async Task<List<Order>> GetOrderByCustomerGuidAsync(Guid customerId, CancellationToken cancellationToken)
+        {
+            return await OrderContext.Order.Where(x => x.CustomerGuid == customerId).ToListAsync(cancellationToken);
         }
     }
 }

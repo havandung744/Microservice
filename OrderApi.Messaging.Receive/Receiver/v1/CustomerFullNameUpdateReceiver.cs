@@ -39,12 +39,6 @@ namespace OrderApi.Messaging.Receive.Receiver.v1
                 Password = _password
             };
 
-            //var factory = new ConnectionFactory
-            //{
-            //    HostName = "localhost",
-            //    UserName = "guest",
-            //    Password = "guest"
-            //};
             _connection = factory.CreateConnection();
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
             _channel = _connection.CreateModel();
@@ -81,7 +75,7 @@ namespace OrderApi.Messaging.Receive.Receiver.v1
 
         private void HandleMessage(UpdateCustomerFullNameModel updateCustomerFullNameModel)
         {
-            //_customerNameUpdateService.UpdateCustomerNameInOrders(updateCustomerFullNameModel);
+            _customerNameUpdateService.UpdateCustomerNameInOrders(updateCustomerFullNameModel);
         }
 
         private void OnConsumerCancelled(object sender, ConsumerEventArgs e)

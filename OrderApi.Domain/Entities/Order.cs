@@ -15,6 +15,5 @@ namespace OrderApi.Domain.Entities
         public Guid CustomerGuid { get; set; }
 
         public string CustomerFullName { get; set; }
-
     }
 }

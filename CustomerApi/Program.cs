@@ -8,7 +8,6 @@ using CustomerApi.Service.v1.Command;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using OrderApi.Data.Repository.v1;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,15 +16,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.AddTransient(typeof(CustomerApi.Data.Repository.v1.IRepository<>), typeof(CustomerApi.Data.Repository.v1.Repository<>));
+
 builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
-//builder.Services.AddTransient<ICustomerUpdateSender, CustomerUpdateSender>();
+
+//builder.Services.AddTransient<IValidator<CreateCustomerModel>, CreateCustomerModelValidator>();
+//builder.Services.AddTransient<IValidator<UpdateCustomerModel>, UpdateCustomerModelValidator>();
+
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(UpdateCustomerCommand).Assembly);
 
+// config connect to db
 var connection = builder.Configuration.GetConnectionString("CustomerDatabase");
 builder.Services.AddDbContext<CustomerContext>(options =>
 {
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("OrderDatabase"));
     options.UseSqlServer(connection, b => b.MigrationsAssembly("CustomerApi"));
+    options.EnableSensitiveDataLogging();
+    //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
 builder.Services.Configure<RabbitMqConfiguration>(builder.Configuration.GetSection("RabbitMq"));
@@ -50,6 +57,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+
+builder.Services.AddSingleton<ICustomerUpdateSender, CustomerUpdateSender>();
 
 var app = builder.Build();
 
@@ -76,7 +85,7 @@ app.UseSwaggerUI(c =>
 });
 
 app.MapControllerRoute(
-    name: "default",    
+    name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run(); 
+app.Run();

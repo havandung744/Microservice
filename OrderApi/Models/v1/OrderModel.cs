@@ -4,8 +4,6 @@ namespace OrderApi.Models.v1
 {
     public class OrderModel
     {
-        public Guid Id { get; set; }
-
         [Required]
         public Guid CustomerGuid { get; set; }
 

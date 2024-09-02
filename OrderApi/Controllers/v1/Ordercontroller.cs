@@ -27,8 +27,6 @@ namespace OrderApi.Controllers.v1
         {
             try
             {
-                orderModel.CustomerGuid = Guid.NewGuid();
-
                 return await _mediator.Send(new CreateOrderCommand
                 {
                     Order = _mapper.Map<Order>(orderModel)
@@ -85,5 +83,7 @@ namespace OrderApi.Controllers.v1
                 return BadRequest(ex.Message);
             }
         }
+
+
     }
 }

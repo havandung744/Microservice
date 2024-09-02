@@ -10,6 +10,7 @@ namespace CustomerApi.Infrastructure.Automapper
         public MappingProfile()
         {
             CreateMap<CreateCustomerModel, Customer>().ReverseMap();
+            CreateMap<UpdateCustomerModel, Customer>().ReverseMap();
         }
     }
 }

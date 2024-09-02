@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OrderApi.Data.Database;
 using OrderApi.Data.Repository.v1;
+using OrderApi.Domain.Entities;
 using OrderApi.Infrastructure.Automapper;
 using OrderApi.Messaging.Receive.Options.v1;
 using OrderApi.Messaging.Receive.Receiver.v1;
-using OrderApi.Service.v1.Models;
+using OrderApi.Service.v1.Command;
+using OrderApi.Service.v1.Query;
 using OrderApi.Service.v1.Services;
 using System.Reflection;
 
@@ -15,9 +17,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//builder.Services.AddHealthChecks();
+builder.Services.AddOptions();
+
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(ICustomerNameUpdateService).Assembly);
-builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(ICustomerNameUpdateService).Assembly, typeof(GetOrderByCustomerGuidQueryHandler).Assembly);
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+//builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+builder.Services.AddTransient<IRequestHandler<GetOrderByCustomerGuidQuery, List<Order>>, GetOrderByCustomerGuidQueryHandler>();
+builder.Services.AddTransient<ICustomerNameUpdateService, CustomerNameUpdateService>();
 
 bool.TryParse(builder.Configuration["BaseServiceSettings:UseInMemoryDatabase"], out var useInMemory);
 bool.TryParse(builder.Configuration["UseAadAuthentication"], out var useAadAuthentication);
@@ -28,20 +38,8 @@ builder.Services.AddDbContext<OrderContext>(options =>
     //options.UseSqlServer(builder.Configuration.GetConnectionString("OrderDatabase"));
     options.UseSqlServer(connection, b => b.MigrationsAssembly("OrderApi"));
 });
-//if (!useInMemory)
-//{
-//    builder.Services.AddDbContext<OrderContext>(options =>
-//    {
-//        options.UseSqlServer(builder.Configuration.GetConnectionString("OrderDatabase"));
-//    });
-//}
-//else
-//{
-//    builder.Services.AddDbContext<OrderContext>(options =>
-//    {
-//        options.UseSqlServer(builder.Configuration.GetConnectionString(Guid.NewGuid().ToString()));
-//    });
-//}
+
+builder.Services.AddScoped<OrderContext>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -58,17 +56,10 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
-//builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-//builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
-builder.Services.AddTransient<ICustomerNameUpdateService, CustomerNameUpdateService>();
-
 //setting for rabbitmq
 var serviceClientSettingsConfig = builder.Configuration.GetSection("RabbitMq");
 builder.Services.Configure<RabbitMqConfiguration>(serviceClientSettingsConfig);
 builder.Services.AddHostedService<CustomerFullNameUpdateReceiver>();
-
 
 var app = builder.Build();
 
@@ -85,7 +76,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
