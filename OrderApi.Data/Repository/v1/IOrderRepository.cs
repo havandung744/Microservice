@@ -9,7 +9,7 @@ namespace OrderApi.Data.Repository.v1
 {
     public interface IOrderRepository : IRepository<Order>
     {
-        Task<List<Order>> GetOrderByCustomerGuidAsync(Guid customerId, CancellationToken cancellationToken);
+        Task<List<Order>> GetOrderByCustomerGuidAsync(Guid customerId);
 
     }
 }

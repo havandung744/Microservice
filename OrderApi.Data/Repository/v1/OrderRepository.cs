@@ -15,9 +15,9 @@ namespace OrderApi.Data.Repository.v1
         {
         }
 
-        public async Task<List<Order>> GetOrderByCustomerGuidAsync(Guid customerId, CancellationToken cancellationToken)
+        public async Task<List<Order>> GetOrderByCustomerGuidAsync(Guid customerId)
         {
-            return await OrderContext.Order.Where(x => x.CustomerGuid == customerId).ToListAsync(cancellationToken);
+            return await OrderContext.Order.Where(x => x.CustomerGuid == customerId).ToListAsync();
         }
     }
 }

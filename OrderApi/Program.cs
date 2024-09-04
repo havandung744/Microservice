@@ -3,12 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OrderApi.Data.Database;
 using OrderApi.Data.Repository.v1;
-using OrderApi.Domain.Entities;
 using OrderApi.Infrastructure.Automapper;
 using OrderApi.Messaging.Receive.Options.v1;
 using OrderApi.Messaging.Receive.Receiver.v1;
-using OrderApi.Service.v1.Command;
-using OrderApi.Service.v1.Query;
 using OrderApi.Service.v1.Services;
 using System.Reflection;
 
@@ -21,12 +18,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddOptions();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(ICustomerNameUpdateService).Assembly, typeof(GetOrderByCustomerGuidQueryHandler).Assembly);
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(ICustomerNameUpdateService).Assembly);
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-//builder.Services.AddTransient<IOrderRepository, OrderRepository>();
-builder.Services.AddTransient<IRequestHandler<GetOrderByCustomerGuidQuery, List<Order>>, GetOrderByCustomerGuidQueryHandler>();
+//builder.Services.AddTransient<IRequestHandler<GetOrderByCustomerGuidQuery, List<Order>>, GetOrderByCustomerGuidQueryHandler>();
 builder.Services.AddTransient<ICustomerNameUpdateService, CustomerNameUpdateService>();
 
 bool.TryParse(builder.Configuration["BaseServiceSettings:UseInMemoryDatabase"], out var useInMemory);
